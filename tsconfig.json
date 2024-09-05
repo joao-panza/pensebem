@@ -22,26 +22,23 @@
       "forceConsistentCasingInFileNames": true,
       "baseUrl": ".",
       "paths": {
-          "@config/*": [
-              "./src/config/*"
+          "@data/*": [
+              "./src/data/*"
           ],
-          "@modules/*": [
-              "./src/modules/*"
+          "@repositories/*": [
+              "./src/repositories/*"
           ],
-          "@binaries/*": [
+          "@resolvers/*": [
+              "./src/resolvers/*"
+          ],
+          "@services/*": [
+              "./src/services/*"
+          ],
+          "@models/*": [
+              "./src/models/*"
+          ],
+          "@bin/*": [
               "./src/bin/*"
-          ],
-          "@commons/*": [
-              "./src/commons/*"
-          ],
-          "@interfaces/*": [
-              "./src/interfaces/*"
-          ],
-          "@errors/*": [
-              "./src/errors/*"
-          ],
-          "@helpers/*": [
-              "./src/helper/*"
           ]
       }
   },
