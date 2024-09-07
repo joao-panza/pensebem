@@ -1,0 +1,69 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Pense Bem",
+    "version": "1.0.0",
+    "description": "API responsible for delivering books from the Pense Bem project, validating answers to questions, and receiving responses to those questions."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local Server"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Welcome message for the API",
+        "responses": {
+          "200": {
+            "description": "Successfully returned the welcome message"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/books": {
+      "get": {
+        "summary": "Retrieve a list of all books",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the list of books"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "summary": "Retrieve a book by its ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the book"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the book details"
+          },
+          "404": {
+            "description": "Book not found with the provided ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,10 +2,11 @@
  * @class BookService
  * @description Classe responsável pela lógica de negócios relacionada aos livros.
  */
+import { NotFoundError } from "../exceptions";
 import { Injectable } from "../decorators";
 import { BookObjectType, ListBooksObjectType } from "../interfaces";
-import { BookError } from "../exceptions";
 import { BookRepository } from "../repositories";
+import { HandleErrorMessage } from "../enums";
 
 @Injectable()
 export class BookService {
@@ -34,13 +35,13 @@ export class BookService {
      * @description Retorna um livro pelo ID.
      * @param {number} id - ID do livro.
      * @returns {BookObjectType} Instância do livro.
-     * @throws {BookError} Se o livro não for encontrado.
+     * @throws {NotFoundError} Se o livro não for encontrado.
      */
     public getBookById(id: number): BookObjectType {
         const book = this.bookRepository.getBookById(id);
 
         if (!book) {
-            throw new BookError("O livro requisitado não pode ser encontrado");
+            throw new NotFoundError(HandleErrorMessage.BOOK_RESPONSE_ERROR_MESSAGE);
         }
 
         return book;

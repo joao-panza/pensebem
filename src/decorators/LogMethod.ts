@@ -14,6 +14,20 @@ export function LogMethod(target: any, key: string, descriptor: PropertyDescript
         let result;
         const res = args.find((arg: any) => arg && typeof arg === 'object' && 'status' in arg && 'json' in arg);
 
+        const req = args[0];
+        const relevantArgs: any = {};
+        if (req) {
+            if (req.params && Object.keys(req.params).length > 0) {
+                relevantArgs['params'] = req.params;
+            }
+            if (req.body && Object.keys(req.body).length > 0) {
+                relevantArgs['body'] = req.body;
+            }
+            if (req.query && Object.keys(req.query).length > 0) {
+                relevantArgs['query'] = req.query;
+            }
+        }
+
         if (res) {
             const originalJson = res.json;
             res.json = (body: any) => {
@@ -32,9 +46,12 @@ export function LogMethod(target: any, key: string, descriptor: PropertyDescript
         const time = new Date().toLocaleTimeString();
         const className = this.constructor.name;
 
-        const responseLog = result !== undefined ? JSON.stringify(result, null, 2) : 'No direct return value';
+        const responseLog = result !== undefined ? JSON.stringify(result) : 'No direct return value';
+        const argsLog = JSON.stringify(relevantArgs);
 
-        console.log(`[${className}] [${key}] ${time} - ${duration}ms - Response ${responseLog}`);
+        console.log("===============================================");
+        console.log(`[${className}] [${key}] ${time} - ${duration}ms\nRequest ${argsLog}\nResponse ${responseLog}`);
+        console.log("===============================================");
 
         return result;
     };

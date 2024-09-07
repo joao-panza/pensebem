@@ -1,1 +1,2 @@
-export * from "./BookError";
+export * from "./InternalServerError";
+export * from "./NotFoundError";

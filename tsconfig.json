@@ -21,26 +21,6 @@
       "emitDecoratorMetadata": true,
       "forceConsistentCasingInFileNames": true,
       "baseUrl": ".",
-      "paths": {
-          "@data/*": [
-              "./src/data/*"
-          ],
-          "@repositories/*": [
-              "./src/repositories/*"
-          ],
-          "@resolvers/*": [
-              "./src/resolvers/*"
-          ],
-          "@services/*": [
-              "./src/services/*"
-          ],
-          "@models/*": [
-              "./src/models/*"
-          ],
-          "@bin/*": [
-              "./src/bin/*"
-          ]
-      }
   },
   "include": [
       "src/**/*"

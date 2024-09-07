@@ -1,2 +1,1 @@
-export * from "./ResponseErrorCode";
-export * from "./ResponseErrorMessage";
+export * from "./HandleErrorMessage";

@@ -1,4 +1,0 @@
-export enum ResponseErrorCode {
-    BOOK_RESPONSE_ERROR_CODE = 1100,
-    INTERNAL_SERVER_ERROR_CODE = 1000
-}
