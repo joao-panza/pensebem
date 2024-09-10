@@ -25,20 +25,110 @@
         }
       }
     },
-    "/books/list": {
+    "/book/list": {
       "get": {
         "summary": "Retrieve a list of all books",
         "responses": {
           "200": {
-            "description": "Successfully retrieved the list of books"
+            "description": "Successfully retrieved the list of books",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "books": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "default": "animals"
+                          },
+                          "title": {
+                            "type": "integer",
+                            "default": "Animals"
+                          },
+                          "author": {
+                            "type": "integer",
+                            "default": "Tectoy"
+                          },
+                          "publisher": {
+                            "type": "integer",
+                            "default": "Nova Cultural"
+                          },
+                          "year": {
+                            "type": "integer",
+                            "default": 1987
+                          },
+                          "edition": {
+                            "type": "integer",
+                            "default": 27
+                          },
+                          "pages": {
+                            "type": "integer",
+                            "default": 36
+                          }
+                        }
+                      }
+                    },
+                    "quantity": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "books": [
+                    {
+                      "id": "animals",
+                      "title": "Animals",
+                      "author": "Tectoy",
+                      "publisher": "Nova Cultural",
+                      "year": 1987,
+                      "edition": 27,
+                      "pages": 36
+                    }
+                  ],
+                  "quantity": 1
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Erro interno do servidor",
+                  "details": null
+                }
+              }
+            }
           }
         }
       }
     },
-    "/books/{id}/programs": {
+    "/book/{id}/program/list": {
       "get": {
         "summary": "Retrieve a book programs by its ID",
         "parameters": [
@@ -54,17 +144,112 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved the book details"
+            "description": "Successfully retrieved the book details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "programs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "programId": {
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    },
+                    "quantity": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "programs": [
+                    {
+                      "programId": "091",
+                      "quantity": 30
+                    },
+                    {
+                      "programId": "092",
+                      "quantity": 30
+                    }
+                  ],
+                  "quantity": 2
+                }
+              }
+            }
           },
           "404": {
-            "description": "Program not found for the book"
+            "description": "Program not found for the book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Programs not found for the book",
+                  "details": null
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Erro interno do servidor",
+                  "details": null
+                }
+              }
+            }
           }
         }
       }
-    },
+    },    
     "/validate": {
       "post": {
         "summary": "Validate the answer to a question",
@@ -75,16 +260,20 @@
                 "type": "object",
                 "properties": {
                   "bookId": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "animals"
                   },
                   "programId": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "091"
                   },
                   "question": {
-                    "type": "number"
+                    "type": "number",
+                    "default": 5
                   },
                   "answer": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "B"
                   }
                 }
               }
@@ -93,16 +282,87 @@
         },
         "responses": {
           "200": {
-            "description": "Successfully validated the answer"
+            "description": "Successfully validated the answer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "correct": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "correct": true
+                }
+              }
+            }
           },
-          "400": {
-            "description": "Question not found for the program"
+          "404": {
+            "description": "Question not found for the program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 404,
+                  "message": "Program XXX not found for the book XXXXXXX",
+                  "details": null
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "status": "error",
+                  "statusCode": 500,
+                  "message": "Erro interno do servidor",
+                  "details": null
+                }
+              }
+            }
           }
         }
       }
-    }
+    }    
   }
 }

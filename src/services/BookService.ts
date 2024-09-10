@@ -9,7 +9,10 @@ import { BookRepository } from "../repositories";
 
 @Injectable()
 export class BookService {
-    constructor(private bookRepository: BookRepository) { }
+    constructor(
+        private bookRepository: BookRepository,
+        private validateRepository: CalculateRepository
+    ) { }
 
     public async getListOfBooks(): Promise<ListBooksObjectType> {
         try {
@@ -47,12 +50,22 @@ export class BookService {
         try {
             const programs = await this.bookRepository.getPrograms(bookId);
             const program = programs.find((program) => program.programId === programId);
+
             if (!program) {
                 throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
             }
 
             const correct = program.answers[question - 1] === answer;
-            return { correct };
+
+            if (!correct) {
+                //TODO: contabilizar tentativas
+            }
+
+            //TODO: armazenar resposta
+            return {
+                correct,
+                //TODO: retornar numero de tentativas restantes
+            };
         } catch (error) {
             throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
         }
