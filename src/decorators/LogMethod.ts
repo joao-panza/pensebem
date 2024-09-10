@@ -32,6 +32,9 @@ export function LogMethod(target: any, key: string, descriptor: PropertyDescript
             const originalJson = res.json;
             res.json = (body: any) => {
                 result = body;
+                const responseLog = result !== undefined ? JSON.stringify(result) : 'No direct return value';
+                console.log(`Response ${responseLog}`);
+                console.log("===============================================\n");
                 return originalJson.call(res, body);
             };
         }
@@ -46,12 +49,9 @@ export function LogMethod(target: any, key: string, descriptor: PropertyDescript
         const time = new Date().toLocaleTimeString();
         const className = this.constructor.name;
 
-        const responseLog = result !== undefined ? JSON.stringify(result) : 'No direct return value';
         const argsLog = JSON.stringify(relevantArgs);
 
-        console.log("===============================================");
-        console.log(`[${className}] [${key}] ${time} - ${duration}ms\nRequest ${argsLog}\nResponse ${responseLog}`);
-        console.log("===============================================");
+        console.log(`[${className}] [${key}] ${time} - ${duration}ms\nRequest ${argsLog}`);
 
         return result;
     };

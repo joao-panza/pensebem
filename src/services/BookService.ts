@@ -4,46 +4,57 @@
  */
 import { NotFoundError } from "../exceptions";
 import { Injectable } from "../decorators";
-import { BookObjectType, ListBooksObjectType } from "../interfaces";
+import { ListBooksObjectType, ListProgramsObjectType } from "../interfaces";
 import { BookRepository } from "../repositories";
-import { HandleErrorMessage } from "../enums";
 
 @Injectable()
 export class BookService {
-    /**
-     * @constructor
-     * @description Inicializa uma nova instância de BookService.
-     * @param {BookRepository} bookRepository - Repositório responsável pela leitura dos dados dos livros.
-     */
     constructor(private bookRepository: BookRepository) { }
 
-    /**
-     * @method getListOfBooks
-     * @description Retorna uma lista de objetos contendo as informações básicas dos livros.
-     * @returns {ListBooksObjectType[]} Lista de objetos com id, título e descrição dos livros.
-     */
-    public getListOfBooks(): ListBooksObjectType[] {
-        return this.bookRepository.getBooks().map(book => ({
-            id: book.id,
-            title: book.title,
-            description: book.description
-        }));
+    public async getListOfBooks(): Promise<ListBooksObjectType> {
+        try {
+            const books = await this.bookRepository.getBooks();
+            
+            return {
+                books,
+                quantity: books.length
+            };
+        } catch (error) {
+            throw new NotFoundError("Books not found in the server");
+        }
     }
 
-    /**
-     * @method getBookById
-     * @description Retorna um livro pelo ID.
-     * @param {number} id - ID do livro.
-     * @returns {BookObjectType} Instância do livro.
-     * @throws {NotFoundError} Se o livro não for encontrado.
-     */
-    public getBookById(id: number): BookObjectType {
-        const book = this.bookRepository.getBookById(id);
-
-        if (!book) {
-            throw new NotFoundError(HandleErrorMessage.BOOK_RESPONSE_ERROR_MESSAGE);
+    public async getBookPrograms(bookId: string): Promise<ListProgramsObjectType> {
+        try {
+            const programs = await this.bookRepository.getPrograms(bookId);
+            
+            return {
+                programs: programs.map((program) => {
+                    const returnProgram = {
+                        programId: program.programId,
+                        quantity: program.answers.length
+                    };
+                    return returnProgram;
+                }),
+                quantity: programs.length
+            };
+        } catch (error) {
+            throw new NotFoundError(`Programs not found for the book ${bookId}`);
         }
+    }
 
-        return book;
+    public async validateProgram(bookId: string, programId: string, question: number, answer: string): Promise<{ correct: boolean }> {
+        try {
+            const programs = await this.bookRepository.getPrograms(bookId);
+            const program = programs.find((program) => program.programId === programId);
+            if (!program) {
+                throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
+            }
+
+            const correct = program.answers[question - 1] === answer;
+            return { correct };
+        } catch (error) {
+            throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
+        }
     }
 }

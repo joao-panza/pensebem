@@ -1,11 +1,5 @@
-import { BookModel } from "../models/BookModels";
+import { BookModel } from "../models/BookModel";
 
-export class ListBooksObjectType {
-    constructor(
-        public id: number,
-        public title: string,
-        public description: string
-    ) {}
+export interface BookObjectType extends BookModel {
+    programs: string[];
 }
-
-export class BookObjectType extends BookModel {}

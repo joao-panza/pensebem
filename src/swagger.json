@@ -25,7 +25,7 @@
         }
       }
     },
-    "/books": {
+    "/books/list": {
       "get": {
         "summary": "Retrieve a list of all books",
         "responses": {
@@ -38,9 +38,9 @@
         }
       }
     },
-    "/books/{id}": {
+    "/books/{id}/programs": {
       "get": {
-        "summary": "Retrieve a book by its ID",
+        "summary": "Retrieve a book programs by its ID",
         "parameters": [
           {
             "in": "path",
@@ -57,7 +57,46 @@
             "description": "Successfully retrieved the book details"
           },
           "404": {
-            "description": "Book not found with the provided ID"
+            "description": "Program not found for the book"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/validate": {
+      "post": {
+        "summary": "Validate the answer to a question",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bookId": {
+                    "type": "string"
+                  },
+                  "programId": {
+                    "type": "string"
+                  },
+                  "question": {
+                    "type": "number"
+                  },
+                  "answer": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully validated the answer"
+          },
+          "400": {
+            "description": "Question not found for the program"
           },
           "500": {
             "description": "Internal server error"
