@@ -5,13 +5,13 @@
 import { NotFoundError } from "../exceptions";
 import { Injectable } from "../decorators";
 import { ListBooksObjectType, ListProgramsObjectType } from "../interfaces";
-import { BookRepository } from "../repositories";
+import { BookRepository, CalculateRepository } from "../repositories";
 
 @Injectable()
 export class BookService {
     constructor(
         private bookRepository: BookRepository,
-        private validateRepository: CalculateRepository
+        private calculateRepository: CalculateRepository
     ) { }
 
     public async getListOfBooks(): Promise<ListBooksObjectType> {
@@ -46,7 +46,7 @@ export class BookService {
         }
     }
 
-    public async validateProgram(bookId: string, programId: string, question: number, answer: string): Promise<{ correct: boolean }> {
+    public async validateProgram(bookId: string, programId: string, question: number, answer: string): Promise<{ correct: boolean, attemptsLeft: number }> {
         try {
             const programs = await this.bookRepository.getPrograms(bookId);
             const program = programs.find((program) => program.programId === programId);
@@ -58,14 +58,14 @@ export class BookService {
             const correct = program.answers[question - 1] === answer;
 
             if (!correct) {
-                //TODO: contabilizar tentativas
+                this.calculateRepository.decrementAttempts();
+            } else {
+                this.calculateRepository.saveAnswer(question);
             }
 
-            //TODO: armazenar resposta
-            return {
-                correct,
-                //TODO: retornar numero de tentativas restantes
-            };
+            const attemptsLeft = this.calculateRepository.getAttempts();
+
+            return { correct, attemptsLeft };
         } catch (error) {
             throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
         }
