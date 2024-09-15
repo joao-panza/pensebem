@@ -1,31 +1,42 @@
 import { ValidateOjectType } from "../interfaces";
 import { NotFoundError } from "../exceptions";
+import { CalculateModel } from "../models";
 
 export class CalculateRepository {
     private readonly NUM_MAX_ATTEMPT = 3;
     private readonly ONE = 1;
     private readonly SCORE_RULES = [0, 1, 2, 3];
 
-    private questions: Map<number, { score: number; attempt: number, correct: boolean }> = new Map();
+    private questions: Map<number, CalculateModel> = new Map();
 
     public addQuestion(question: number): void {
         if (!this.questions.has(question)) {
-            this.questions.set(question, { score: 0, attempt: this.NUM_MAX_ATTEMPT, correct: false });
+            this.questions.set(question, {
+                score: 0,
+                attempt: this.NUM_MAX_ATTEMPT,
+                correct: false,
+                answers: []
+            });
         }
     }
     
-    public saveAnswer(question: number, correctAnswer: boolean = false): ValidateOjectType {
+    public saveAnswer(question: number, correctAnswer: boolean, answer: string): CalculateModel {
         this.questionExists(question);
         let currentQuestion = this.questions.get(question)!;
         const result = { ...currentQuestion };
 
-        if(!result.correct && !correctAnswer) {
-            result.attempt -= this.ONE;
-            this.questions.set(question, result);
+        if(result.correct) {
             return result;
         }
 
-        if(result.correct) {
+        result.answers.push({
+            answer,
+            correct: correctAnswer,
+        });
+
+        if(!result.correct && !correctAnswer) {
+            result.attempt -= this.ONE;
+            this.questions.set(question, result);
             return result;
         }
 
@@ -54,6 +65,10 @@ export class CalculateRepository {
 
     public resetQuestions(): void {
         this.questions = new Map();
+    }
+
+    public getQuestions(): CalculateModel[] {
+        return Array.from(this.questions.values());
     }
 
     private questionExists(question: number): void {

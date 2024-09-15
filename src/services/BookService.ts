@@ -60,17 +60,31 @@ export class BookService {
             
             const correct = program.answers[question - 1] === answer;
             
-            return this.calculateRepository.saveAnswer(question, correct);
+            const {
+                score,
+                attempt,
+                correct: isCorrect,
+            } = this.calculateRepository.saveAnswer(question, correct, answer);
+
+            return {
+                score,
+                attempt,
+                correct: isCorrect,
+                answer
+            }
         } catch (error) {
             throw error;
         }
     }
 
-    public async calculate(): Promise<number> {
+    public async calculate(): Promise<{result: number, questions: ValidateOjectType[]}> {
         try {
             const score = this.calculateRepository.calculateScore();
 
-            return score;
+            return {
+                result: score,
+                questions: this.calculateRepository.getQuestions()
+            };
         } catch (error) {
             throw new NotFoundError("Error calculating the score");
         }
