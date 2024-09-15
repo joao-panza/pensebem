@@ -363,6 +363,56 @@
           }
         }
       }
-    }    
+    },
+    "/calculate": {
+      "get": {
+        "summary": "Perform a calculation",
+        "responses": {
+          "200": {
+            "description": "Successfully performed the calculation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    } 
+  },
+  "components": {
+    "schemas": {
+      "Book": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "publishedDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    }
   }
 }

@@ -56,4 +56,19 @@ export default class BookResolver {
             next(error);
         }
     }
+
+    @Route("/calculate", "get")
+    public async calculate(_: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            this.bookService.calculate()
+                .then((result) => {
+                    res.status(200).json(result);
+                })
+                .catch((error) => {
+                    next(error);
+                });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

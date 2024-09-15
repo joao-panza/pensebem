@@ -1,10 +1,6 @@
-/**
- * @class BookService
- * @description Classe responsável pela lógica de negócios relacionada aos livros.
- */
-import { NotFoundError } from "../exceptions";
+import { GenericFunctionalError, NotFoundError } from "../exceptions";
 import { Injectable } from "../decorators";
-import { ListBooksObjectType, ListProgramsObjectType } from "../interfaces";
+import { ListBooksObjectType, ListProgramsObjectType, ValidateOjectType } from "../interfaces";
 import { BookRepository, CalculateRepository } from "../repositories";
 
 @Injectable()
@@ -30,6 +26,7 @@ export class BookService {
     public async getBookPrograms(bookId: string): Promise<ListProgramsObjectType> {
         try {
             const programs = await this.bookRepository.getPrograms(bookId);
+            this.calculateRepository.resetQuestions();
             
             return {
                 programs: programs.map((program) => {
@@ -46,7 +43,7 @@ export class BookService {
         }
     }
 
-    public async validateProgram(bookId: string, programId: string, question: number, answer: string): Promise<{ correct: boolean, attemptsLeft: number }> {
+    public async validateProgram(bookId: string, programId: string, question: number, answer: string): Promise<ValidateOjectType> {
         try {
             const programs = await this.bookRepository.getPrograms(bookId);
             const program = programs.find((program) => program.programId === programId);
@@ -55,19 +52,27 @@ export class BookService {
                 throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
             }
 
-            const correct = program.answers[question - 1] === answer;
-
-            if (!correct) {
-                this.calculateRepository.decrementAttempts();
-            } else {
-                this.calculateRepository.saveAnswer(question);
+            this.calculateRepository.addQuestion(question);
+            
+            if (!this.calculateRepository.hasAttempts(question)) {
+                throw new GenericFunctionalError("No attempts left for this program");
             }
-
-            const attemptsLeft = this.calculateRepository.getAttempts();
-
-            return { correct, attemptsLeft };
+            
+            const correct = program.answers[question - 1] === answer;
+            
+            return this.calculateRepository.saveAnswer(question, correct);
         } catch (error) {
-            throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
+            throw error;
+        }
+    }
+
+    public async calculate(): Promise<number> {
+        try {
+            const score = this.calculateRepository.calculateScore();
+
+            return score;
+        } catch (error) {
+            throw new NotFoundError("Error calculating the score");
         }
     }
 }
