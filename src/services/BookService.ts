@@ -2,6 +2,7 @@ import { GenericFunctionalError, NotFoundError } from "../exceptions";
 import { Injectable } from "../decorators";
 import { ListBooksObjectType, ListProgramsObjectType, ValidateOjectType } from "../interfaces";
 import { BookRepository, CalculateRepository } from "../repositories";
+import { CalculateModel } from "../models";
 
 @Injectable()
 export class BookService {
@@ -31,7 +32,7 @@ export class BookService {
             return {
                 programs: programs.map((program) => {
                     const returnProgram = {
-                        programId: program.programId,
+                        programId: program.id,
                         quantity: program.answers.length
                     };
                     return returnProgram;
@@ -46,7 +47,7 @@ export class BookService {
     public async validateProgram(bookId: string, programId: string, question: number, answer: string): Promise<ValidateOjectType> {
         try {
             const programs = await this.bookRepository.getPrograms(bookId);
-            const program = programs.find((program) => program.programId === programId);
+            const program = programs.find((program) => program.id === programId);
 
             if (!program) {
                 throw new NotFoundError(`Program ${programId} not found for the book ${bookId}`);
@@ -77,7 +78,7 @@ export class BookService {
         }
     }
 
-    public async calculate(): Promise<{result: number, questions: ValidateOjectType[]}> {
+    public async calculate(): Promise<{result: number, questions: CalculateModel[]}> {
         try {
             const score = this.calculateRepository.calculateScore();
 

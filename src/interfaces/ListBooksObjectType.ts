@@ -1,6 +1,6 @@
 import { BookModel } from "../models/BookModel";
 
 export interface ListBooksObjectType {
-    books: BookModel[];
+    books: Omit<BookModel, "programs">[];
     quantity: number;
 }

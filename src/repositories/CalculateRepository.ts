@@ -1,4 +1,3 @@
-import { ValidateOjectType } from "../interfaces";
 import { NotFoundError } from "../exceptions";
 import { CalculateModel } from "../models";
 

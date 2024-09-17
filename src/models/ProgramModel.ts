@@ -1,4 +1,4 @@
 export interface ProgramModel {
-    programId: string;
+    id: string;
     answers: string[];
 }

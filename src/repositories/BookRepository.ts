@@ -9,19 +9,20 @@ import { FileManager } from "../bin/FileManager";
 
 @Injectable()
 export class BookRepository {
-    constructor(
-        private fileManager: FileManager
-    ) {}
+    private readonly bookPath = path.join(__dirname, "..", "data");
+
+    constructor(private fileManager: FileManager) {}
 
     @Cache
-    public async getBooks(): Promise<BookModel[]> {
-        const bookPath = path.join(__dirname, "..", "data");
-        return this.fileManager.loadBooks<BookModel[]>(bookPath);
+    public async getBooks(): Promise<Omit<BookModel, "programs">[]> {
+        const listOfBooks = await this.fileManager.readFile<BookModel[]>(this.bookPath);
+        return Array.from(listOfBooks, ({ programs: _, ...book }: BookModel) => book);
     }
 
     @Cache
     public async getPrograms(bookId: string): Promise<ProgramModel[]> {
-        const programsPath = path.join(__dirname, "..", "data", bookId, "programs");
-        return this.fileManager.loadPrograms(programsPath);
+        const listOfBooks = await this.fileManager.readFile<BookModel[]>(this.bookPath);
+        const selectedBook = listOfBooks.find((book) => book.id === bookId);
+        return selectedBook?.programs ?? [];
     }
 }
